@@ -19,8 +19,8 @@
     <div id="lockScreen" class="flex-center">
         <div class="login-card">
             <h2>Access Gate</h2>
-            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter key to enter the main page.</p>
-            <input type="password" id="accessKey" placeholder="Enter Password"><br>
+            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter your personal key to unlock the page.</p>
+            <input type="text" id="accessKey" placeholder="Enter Your Key"><br>
             <button onclick="unlock()">Enter Site</button>
         </div>
     </div>
@@ -33,13 +33,41 @@
     </div>
 
     <script>
+        // 🔑 YOUR KEYS CONFIGURATION LIST
+        // Format for dates must be: "YYYY-MM-DD"
+        const keyList = {
+            "Aarya": "2026-06-6",  // This key expires on June 10, 2026
+            "VIP": "2027-07-01", // This key expires on July 1, 2026
+            "Yuvraj": "2026-06-03", // This key expires on June 5, 2026
+            "Emote": "2025-12-7" // This key has ALREADY expired (example)
+        };
+
         function unlock() {
-            const code = document.getElementById('accessKey').value;
-            if (code === "1") {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('webContainer').style.display = 'block';
+            const enteredKey = document.getElementById('accessKey').value.trim();
+            
+            // 1. Check if the key exists in our list
+            if (keyList.hasOwnProperty(enteredKey)) {
+                
+                const expiryDateString = keyList[enteredKey];
+                const expiryDate = new Date(expiryDateString);
+                const currentDate = new Date();
+                
+                // Reset hours to midnight for accurate day-by-day comparison
+                currentDate.setHours(0,0,0,0);
+                expiryDate.setHours(0,0,0,0);
+
+                // 2. Check if the current date is past the expiry date
+                if (currentDate > expiryDate) {
+                    alert("This key has expired! Please get a new key from the admin.");
+                } else {
+                    // Key is valid and active!
+                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('webContainer').style.display = 'block';
+                }
+
             } else {
-                alert("Wrong Key!");
+                // Key does not exist in the list
+                alert("Invalid Key! Access Denied.");
             }
         }
     </script>
