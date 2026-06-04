@@ -3,150 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF Emote Premium Portal</title>
+    <title>FF Portal</title>
     <style>
-        /* This sets up the dark gaming theme background */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #0f0f12; 
-            color: #f5f5f7; 
-        }
-        
-        .flex-center { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-        }
-        
-        /* Style for the Password Box Screen */
-        .login-card { 
-            background: #18181c; 
-            padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
-            text-align: center; 
-            border: 1px solid #2d2d34; 
-        }
-        
-        input { 
-            padding: 12px; 
-            font-size: 16px; 
-            border: 1px solid #3a3a44; 
-            border-radius: 6px; 
-            margin-bottom: 15px; 
-            width: 220px; 
-            text-align: center; 
-            background: #222227; 
-            color: white; 
-        }
-        
-        input:focus { 
-            border-color: #ff4a4a; 
-            outline: none; 
-        }
-        
-        button { 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            background: #ff4a4a; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.2s; 
-        }
-        
-        button:hover { 
-            background: #cc3333; 
-        }
-        
-        /* Style for the Download Screen (Hidden at first) */
-        #dashboard { 
-            display: none; 
-            padding: 40px; 
-            max-width: 600px; 
-            margin: 0 auto; 
-            text-align: center;
-        }
-        
-        .header { 
-            border-bottom: 1px solid #2d2d34; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px; 
-        }
-        
-        .card { 
-            background: #18181c; 
-            padding: 30px; 
-            border-radius: 10px; 
-            border: 1px solid #2d2d34; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        .download-btn { 
-            display: inline-block; 
-            margin-top: 15px; 
-            padding: 12px 30px; 
-            background: #34c759; 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            font-size: 18px;
-            transition: 0.2s;
-        }
-        
-        .download-btn:hover { 
-            background: #28a745; 
-        }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; background: #0f0f12; color: white; }
+        .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { background: #18181c; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #2d2d34; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        input { padding: 12px; font-size: 16px; border: 1px solid #3a3a44; border-radius: 6px; margin-bottom: 15px; width: 220px; text-align: center; background: #222227; color: white; }
+        button { padding: 12px 24px; font-size: 16px; background: #ff4a4a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        #webContainer { width: 100%; height: 100vh; display: none; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
     <div id="lockScreen" class="flex-center">
         <div class="login-card">
-            <h2>FF Emote Unlocker</h2>
-            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter your secret access key to view the download.</p>
-            
-            <input type="password" id="accessKey" placeholder="Enter Key Here"><br>
-            <button onclick="verifyKey()">Unlock Files</button>
+            <h2>Access Gate</h2>
+            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter key to enter the main page.</p>
+            <input type="password" id="accessKey" placeholder="Enter Password"><br>
+            <button onclick="unlock()">Enter Site</button>
         </div>
     </div>
 
-    <div id="dashboard">
-        <div class="header">
-            <h1>Files Unlocked Successfully!</h1>
-            <p style="color: #8e8e93;">Click the button below to save the configuration file directly.</p>
-        </div>
-        
-        <div class="card">
-            <h3>Free Fire Emote Config Pack</h3>
-            <p style="color: #8e8e93; font-size: 14px;">Version: Latest Update</p>
-            
-            <a href="config.json" download class="download-btn">Click to Download File</a>
-        </div>
+    <div id="webContainer">
+        <iframe 
+            src="https://ffemote.pro/" 
+            sandbox="allow-same-origin allow-forms allow-scripts">
+        </iframe>
     </div>
 
     <script>
-        function verifyKey() {
-            const enteredKey = document.getElementById('accessKey').value;
-            
-            // This checks your password "1"
-            const correctKey = "1"; 
-
-            if (enteredKey === correctKey) {
-                // Hide the password box screen
+        function unlock() {
+            const code = document.getElementById('accessKey').value;
+            if (code === "1") {
                 document.getElementById('lockScreen').style.display = 'none';
-                // Show the download dashboard page
-                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('webContainer').style.display = 'block';
             } else {
-                alert("Wrong Key! Please try again.");
+                alert("Wrong Key!");
             }
         }
     </script>
