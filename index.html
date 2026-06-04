@@ -3,65 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Access Portal</title>
+    <title>Premium Rewards Dashboard</title>
     <style>
-        /* Ensures everything scales perfectly to fill the screen */
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; background: #1a1a1a; color: white; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f12; color: #f5f5f7; }
+        .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
         
-        /* Centered Key/Password Screen Box */
-        .gatekeeper-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .login-box { background: #2a2a2a; padding: 40px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        input { padding: 10px; font-size: 16px; border: none; border-radius: 4px; margin-bottom: 15px; width: 200px; text-align: center; background: #333; color: white; }
-        button { padding: 10px 20px; font-size: 16px; background: #238636; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #2ea043; }
+        /* Password Portal */
+        .login-card { background: #18181c; padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); text-align: center; border: 1px solid #2d2d34; }
+        input { padding: 12px; font-size: 16px; border: 1px solid #3a3a44; border-radius: 6px; margin-bottom: 15px; width: 220px; text-align: center; background: #222227; color: white; }
+        input:focus { border-color: #007aff; outline: none; }
+        button { padding: 12px 24px; font-size: 16px; background: #007aff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #0056b3; }
         
-        /* Container for the hidden page */
-        #contentContainer { width: 100%; height: 100vh; display: none; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* Main Application Dashboard */
+        #dashboard { display: none; padding: 40px; max-width: 800px; margin: 0 auto; }
+        .header { border-bottom: 1px solid #2d2d34; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .card { background: #18181c; padding: 20px; border-radius: 10px; border: 1px solid #2d2d34; text-align: center; }
+        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #34c759; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
+        .download-btn:hover { background: #28a745; }
     </style>
 </head>
 <body>
 
-    <div id="lockScreen" class="gatekeeper-container">
-        <div class="login-box">
-            <h2>Authentication Required</h2>
-            <p>Please enter your access key to view the page.</p>
-            <input type="password" id="accessKey" placeholder="Enter Key Here"><br>
-            <button onclick="verifyKey()">Access Content</button>
+    <div id="lockScreen" class="flex-center">
+        <div class="login-card">
+            <h2>Secure Asset Portal</h2>
+            <p style="color: #9a9a1a4; font-size: 14px; margin-bottom: 20px;">Please enter your access key to unlock your files.</p>
+            <input type="password" id="accessKey" placeholder="••••••••"><br>
+            <button onclick="verifyKey()">Unlock Portal</button>
         </div>
     </div>
 
-    <div id="contentContainer"></div>
+    <div id="dashboard">
+        <div class="header">
+            <h1>Your Premium Downloads</h1>
+            <p style="color: #8e8e93;">Access your files instantly without ads or popups.</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>Emote Pack v1.0</h3>
+                <p style="color: #8e8e93; font-size: 14px;">Direct config file download.</p>
+                <a href="filename.json" download class="download-btn">Download Now</a>
+            </div>
+
+            <div class="card">
+                <h3>Special Animation Tool</h3>
+                <p style="color: #8e8e93; font-size: 14px;">Optimized game file.</p>
+                <a href="tool.zip" download class="download-btn">Download Now</a>
+            </div>
+        </div>
+    </div>
 
     <script>
         function verifyKey() {
             const enteredKey = document.getElementById('accessKey').value;
             
-            // 🛑 SETUP: Change your password key and target URL link here
+            // Matches your password "1"
             const correctKey = "1"; 
-            const targetUrl = "https://ffemote.pro"; 
 
             if (enteredKey === correctKey) {
-                // Hide the password box screen
                 document.getElementById('lockScreen').style.display = 'none';
-                
-                // Target the output container
-                const container = document.getElementById('contentContainer');
-                container.style.display = 'block';
-                
-                /* The Sandbox Trick: 
-                  By using 'allow-same-origin allow-forms' but OMITTING 'allow-scripts', 
-                  the target website's text and style will load, but its pop-up code 
-                  (#likesBoostPopup) will be completely frozen and won't appear.
-                */
-                container.innerHTML = `
-                    <iframe 
-                        src="${targetUrl}" 
-                        sandbox="allow-same-origin allow-forms" 
-                        style="width:100%; height:100%; border:none;">
-                    </iframe>`;
+                document.getElementById('dashboard').style.display = 'block';
             } else {
-                alert("Incorrect Key! Access Denied.");
+                alert("Access Denied: Invalid Key!");
             }
         }
     </script>
