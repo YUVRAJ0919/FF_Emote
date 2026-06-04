@@ -3,56 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Rewards Dashboard</title>
+    <title>FF Emote Premium Portal</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f12; color: #f5f5f7; }
-        .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        /* This sets up the dark gaming theme background */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #0f0f12; 
+            color: #f5f5f7; 
+        }
         
-        /* Password Portal */
-        .login-card { background: #18181c; padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); text-align: center; border: 1px solid #2d2d34; }
-        input { padding: 12px; font-size: 16px; border: 1px solid #3a3a44; border-radius: 6px; margin-bottom: 15px; width: 220px; text-align: center; background: #222227; color: white; }
-        input:focus { border-color: #007aff; outline: none; }
-        button { padding: 12px 24px; font-size: 16px; background: #007aff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover { background: #0056b3; }
+        .flex-center { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+        }
         
-        /* Main Application Dashboard */
-        #dashboard { display: none; padding: 40px; max-width: 800px; margin: 0 auto; }
-        .header { border-bottom: 1px solid #2d2d34; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .card { background: #18181c; padding: 20px; border-radius: 10px; border: 1px solid #2d2d34; text-align: center; }
-        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #34c759; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
-        .download-btn:hover { background: #28a745; }
+        /* Style for the Password Box Screen */
+        .login-card { 
+            background: #18181c; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
+            text-align: center; 
+            border: 1px solid #2d2d34; 
+        }
+        
+        input { 
+            padding: 12px; 
+            font-size: 16px; 
+            border: 1px solid #3a3a44; 
+            border-radius: 6px; 
+            margin-bottom: 15px; 
+            width: 220px; 
+            text-align: center; 
+            background: #222227; 
+            color: white; 
+        }
+        
+        input:focus { 
+            border-color: #ff4a4a; 
+            outline: none; 
+        }
+        
+        button { 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            background: #ff4a4a; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.2s; 
+        }
+        
+        button:hover { 
+            background: #cc3333; 
+        }
+        
+        /* Style for the Download Screen (Hidden at first) */
+        #dashboard { 
+            display: none; 
+            padding: 40px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            text-align: center;
+        }
+        
+        .header { 
+            border-bottom: 1px solid #2d2d34; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+        }
+        
+        .card { 
+            background: #18181c; 
+            padding: 30px; 
+            border-radius: 10px; 
+            border: 1px solid #2d2d34; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .download-btn { 
+            display: inline-block; 
+            margin-top: 15px; 
+            padding: 12px 30px; 
+            background: #34c759; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        
+        .download-btn:hover { 
+            background: #28a745; 
+        }
     </style>
 </head>
 <body>
 
     <div id="lockScreen" class="flex-center">
         <div class="login-card">
-            <h2>Secure Asset Portal</h2>
-            <p style="color: #9a9a1a4; font-size: 14px; margin-bottom: 20px;">Please enter your access key to unlock your files.</p>
-            <input type="password" id="accessKey" placeholder="••••••••"><br>
-            <button onclick="verifyKey()">Unlock Portal</button>
+            <h2>FF Emote Unlocker</h2>
+            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter your secret access key to view the download.</p>
+            
+            <input type="password" id="accessKey" placeholder="Enter Key Here"><br>
+            <button onclick="verifyKey()">Unlock Files</button>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="header">
-            <h1>Your Premium Downloads</h1>
-            <p style="color: #8e8e93;">Access your files instantly without ads or popups.</p>
+            <h1>Files Unlocked Successfully!</h1>
+            <p style="color: #8e8e93;">Click the button below to save the configuration file directly.</p>
         </div>
         
-        <div class="grid">
-            <div class="card">
-                <h3>Emote Pack v1.0</h3>
-                <p style="color: #8e8e93; font-size: 14px;">Direct config file download.</p>
-                <a href="filename.json" download class="download-btn">Download Now</a>
-            </div>
-
-            <div class="card">
-                <h3>Special Animation Tool</h3>
-                <p style="color: #8e8e93; font-size: 14px;">Optimized game file.</p>
-                <a href="tool.zip" download class="download-btn">Download Now</a>
-            </div>
+        <div class="card">
+            <h3>Free Fire Emote Config Pack</h3>
+            <p style="color: #8e8e93; font-size: 14px;">Version: Latest Update</p>
+            
+            <a href="config.json" download class="download-btn">Click to Download File</a>
         </div>
     </div>
 
@@ -60,14 +137,16 @@
         function verifyKey() {
             const enteredKey = document.getElementById('accessKey').value;
             
-            // Matches your password "1"
+            // This checks your password "1"
             const correctKey = "1"; 
 
             if (enteredKey === correctKey) {
+                // Hide the password box screen
                 document.getElementById('lockScreen').style.display = 'none';
+                // Show the download dashboard page
                 document.getElementById('dashboard').style.display = 'block';
             } else {
-                alert("Access Denied: Invalid Key!");
+                alert("Wrong Key! Please try again.");
             }
         }
     </script>
