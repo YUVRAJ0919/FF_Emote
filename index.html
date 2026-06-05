@@ -7,7 +7,7 @@
     <style>
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; background: #0f0f12; color: white; }
         .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .login-card { background: #18181c; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #2d2d34; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        .login-card { background: #18181c; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #2d2d34; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
         input { padding: 12px; font-size: 16px; border: 1px solid #3a3a44; border-radius: 6px; margin-bottom: 15px; width: 220px; text-align: center; background: #222227; color: white; }
         button { padding: 12px 24px; font-size: 16px; background: #ff4a4a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
         #webContainer { width: 100%; height: 100vh; display: none; }
@@ -19,55 +19,97 @@
     <div id="lockScreen" class="flex-center">
         <div class="login-card">
             <h2>Access Gate</h2>
-            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter your personal key to unlock the page.</p>
+            <p style="color: #8e8e93; font-size: 14px; margin-bottom: 20px;">Enter your personal key to unlock the tool.</p>
             <input type="text" id="accessKey" placeholder="Enter Your Key"><br>
             <button onclick="unlock()">Enter Site</button>
         </div>
     </div>
 
     <div id="webContainer">
-        <iframe 
-            src="https://ffemote.pro/" 
-            sandbox="allow-same-origin allow-forms allow-scripts">
-        </iframe>
+        <iframe src="https://ffemote.pro/" sandbox="allow-same-origin allow-forms allow-scripts"></iframe>
     </div>
 
     <script>
-        // 🔑 YOUR KEYS CONFIGURATION LIST
-        // Format for dates must be: "YYYY-MM-DD"
+        // 🛑 CONFIGURATION: Paste your Discord Webhook URL here to track logins
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1512268967702429696/7Cv5yJBrc-3GG3HE3KLsHPnl0KRt1u7G4KlFYWOfcto2oxkXsLgYWX4BZYol2ULZ_RLN";
+
+        // 🔑 KEYS CONFIGURATION
+        // You can set the "maxDevices" number to 1, 3, 5, 8, 10, or 100!
         const keyList = {
-            "Aarya": "2026-06-6",  // This key expires on June 10, 2026
-            "VIP": "2027-07-01", // This key expires on July 1, 2026
-            "Yuvraj": "2026-06-03", // This key expires on June 5, 2026
-            "Emote": "2025-12-7" // This key has ALREADY expired (example)
+            "1": { expiry: "2026-07-01", maxDevices: 1 },    // Works on only 1 device
+            "Aarya":  { expiry: "2026-08-15", maxDevices: 4 },    // Works on up to 4 devices
+            "VIP":  { expiry: "2026-09-01", maxDevices: 5 },   // Works on up to 10 devices
+            "Yuvraj": { expiry: "2026-12-31", maxDevices: 100 }   // Works on up to 100 devices
         };
+
+        // Generates a unique footprint for each browser
+        function getDeviceID() {
+            return navigator.platform + "-" + (navigator.userAgent.length % 30) + "-" + screen.width;
+        }
+
+        function sendDiscordLog(key, status, deviceID) {
+            if (!DISCORD_WEBHOOK_URL.startsWith("https://discord")) return;
+            const payload = {
+                username: "Gatekeeper Bot",
+                embeds: [{
+                    title: "🔒 Key Activity Log",
+                    color: status.includes("Approved") ? 65280 : 16711680,
+                    fields: [
+                        { name: "Key", value: `\`${key}\``, inline: true },
+                        { name: "Status", value: `**${status}**`, inline: true },
+                        { name: "Device Hash", value: `\`${deviceID}\``, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+            fetch(DISCORD_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }).catch(err => console.log(err));
+        }
 
         function unlock() {
             const enteredKey = document.getElementById('accessKey').value.trim();
+            const currentDevice = getDeviceID();
             
-            // 1. Check if the key exists in our list
             if (keyList.hasOwnProperty(enteredKey)) {
-                
-                const expiryDateString = keyList[enteredKey];
-                const expiryDate = new Date(expiryDateString);
+                const keyData = keyList[enteredKey];
+                const expiryDate = new Date(keyData.expiry);
                 const currentDate = new Date();
                 
-                // Reset hours to midnight for accurate day-by-day comparison
                 currentDate.setHours(0,0,0,0);
                 expiryDate.setHours(0,0,0,0);
 
-                // 2. Check if the current date is past the expiry date
+                // 1. Check if expired
                 if (currentDate > expiryDate) {
-                    alert("This key has expired! Please get a new key from the admin.");
-                } else {
-                    // Key is valid and active!
-                    document.getElementById('lockScreen').style.display = 'none';
-                    document.getElementById('webContainer').style.display = 'block';
+                    alert("This key has expired!");
+                    sendDiscordLog(enteredKey, "Rejected: Expired", currentDevice);
+                    return;
                 }
 
+                // 2. DEVICE TRACKING SYSTEM
+                // We save a list of logged-in devices inside the key configurations locally
+                let storageKey = "used_devices_" + enteredKey;
+                let registeredDevices = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+                // If this specific device is NOT in the list, try to add it
+                if (!registeredDevices.includes(currentDevice)) {
+                    if (registeredDevices.length >= keyData.maxDevices) {
+                        alert("Device Limit Reached! You cannot use this key on more devices.");
+                        sendDiscordLog(enteredKey, `Blocked: Device Limit (${keyData.maxDevices}) Reached`, currentDevice);
+                        return;
+                    } else {
+                        // Register the new device
+                        registeredDevices.push(currentDevice);
+                        localStorage.setItem(storageKey, JSON.stringify(registeredDevices));
+                    }
+                }
+
+                // If it passes, log in completely
+                sendDiscordLog(enteredKey, "Approved: Access Granted", currentDevice);
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('webContainer').style.display = 'block';
+
             } else {
-                // Key does not exist in the list
-                alert("Invalid Key! Access Denied.");
+                alert("Invalid Key!");
+                sendDiscordLog(enteredKey, "Rejected: Non-existent Key", currentDevice);
             }
         }
     </script>
